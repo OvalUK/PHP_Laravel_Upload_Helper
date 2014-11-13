@@ -25,7 +25,7 @@ Here is an example of a controller method
             }            
             else
             {
-                GeneralHelper::PrintExt( $validation->messages() );
+                print_r( $validation->messages() );
             }            
         }
         else
