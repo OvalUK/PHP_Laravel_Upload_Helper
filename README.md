@@ -15,8 +15,8 @@ Here is an example of a controller method
         if( Input::hasFile( "File" ) )
         {            
             $validation = Validator::make( 
-                array( "File" => $file ), 
-                array( "File" => "mimes:png" ) 
+                array( "File" => $file ), // Values
+                array( "File" => "mimes:png" ) // Rules
             );
             
             if( !$validation->fails() )
