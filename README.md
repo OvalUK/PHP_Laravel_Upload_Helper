@@ -1,46 +1,36 @@
-PHP_Laravel_Pagination
+PHP_Laravel_Upload_Helper
 ======================
 
-Include our library using the composer name: oval/laravel-pagination
+Include our library using the composer name: "oval/laravel-upload-helper": "v1.0.3"
 
-**View:**
-
-$Model->items was passed from our controller and contains the response from the database(see model)
-    
-    <?=$Model->items->appends( Input::except('page') )->links();?>
-    
 **Controller:**
 
 Here is an example of a controller method
 
-
-    public function Test()
+    public function PostTestUpload()
     {
+        $file = Input::file( "File" );
         
-        $paginationViewModel = new PaginationViewModel();
-        $paginationModel = new PaginationModel();
-        
-        $paginationModel->amount = 50;
-        $paginationModel->columns[ "projectTitle" ] = new PaginationColumn( "project_title", Input::get( "projectTitle" ), Input::get('projectTitleSort') );
-        $paginationModel->columns[ "partners" ] = new PaginationColumn( "partners", Input::get( "partners" ), Input::get('partnersSort') );        
-        $paginationModel->page = isset( $_GET[ "page" ] ) ? $_GET[ "page" ] : 0;
-        
-        $paginationViewModel->paginationModel = $paginationModel;
-        $paginationViewModel->items = $this->yourRepository->GetWithPagination( $paginationModel );
-        
-        return View::make('whatever/test', array( "Model" => $paginationViewModel ) );
-        
+        // Check if any file was uploaded
+        if( Input::hasFile( "File" ) )
+        {            
+            $validation = Validator::make( 
+                array( "File" => $file ), 
+                array( "File" => "mimes:png" ) 
+            );
+            
+            if( !$validation->fails() )
+            {
+                UploadHelper::UploadFile( $file, "location/of/file", uniqid() . "_" . $file->getClientOriginalName() );
+            }            
+            else
+            {
+                GeneralHelper::PrintExt( $validation->messages() );
+            }            
+        }
+        else
+        {
+            // Redirect with some error saying upload a file!
+            echo "Ah, no file was uploaded...<br />";
+        }
     }
-
-**Model:**
-
-This is the GetWithPagination method we set up in our "yourRepository"
-
-
-    public function GetWithPagination( PaginationModel $paginationModel )
-    {
-        $query = DB::table('tablename');   
-        $whatevers = $query->paginate( PaginationHelper::PrepareForDb( $query, $paginationModel ) );
-        return $whatevers;
-    }
-    
