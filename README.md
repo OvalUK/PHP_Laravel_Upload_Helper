@@ -34,3 +34,14 @@ Here is an example of a controller method
             echo "Ah, no file was uploaded...<br />";
         }
     }
+
+**View:**
+
+Here is an example of the view
+
+    <form enctype='multipart/form-data' method="post" action='<?=action('TestController@PostTestUpload')?>'>
+        Upload <input type='file' name="File" />
+        <button>UPLOAD</button>
+    </form>
+    
+    
